@@ -38,7 +38,7 @@ const server = http.createServer((req, res) => {
   }
 });
 
-const port = process.env.PORT || 3000;
+const port = "https://vercel-server-iota-murex.vercel.app"
 server.listen(port, () => {
   console.log(`Server is running on ${port}`);
 });
