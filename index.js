@@ -1,4 +1,17 @@
-const http = require('http');
+const express = require('express');
+const app = express();
+const port = process.env.PORT || 3000;
+
+app.get('/', (req, res) => {
+  res.send('Hello, Vercel!');
+});
+
+app.listen(port, () => {
+  console.log(`Server running on http://localhost:${port}`);
+});
+
+
+/*const http = require('http');
 const { Pool } = require('pg');
 const url = require('url');
 const queryString = require('querystring');
@@ -42,3 +55,4 @@ const port = "https://vercel-server-iota-murex.vercel.app"
 server.listen(port, () => {
   console.log(`Server is running on ${port}`);
 });
+*/
