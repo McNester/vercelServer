@@ -1,21 +1,10 @@
 const express = require('express');
-const app = express();
-const port = process.env.PORT || 3000;
-
-app.get('/', (req, res) => {
-  res.send('Hello, Vercel!');
-});
-
-app.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`);
-});
-
-
-/*const http = require('http');
 const { Pool } = require('pg');
-const url = require('url');
-const queryString = require('querystring');
+const cors = require('cors');
+const app = express();
+const port = 4000;
 
+// Database configuration
 const pool = new Pool({
   connectionString: "postgres://default:IdCSa1vmw4ZW@ep-twilight-forest-10679423-pooler.ap-southeast-1.postgres.vercel-storage.com/verceldb",
   ssl: {
@@ -23,36 +12,44 @@ const pool = new Pool({
   }
 });
 
-const server = http.createServer((req, res) => {
-  if (req.method === 'POST') {
-    let body = '';
+app.use(cors()); // Enable CORS
+app.use(express.json()); // Parse JSON bodies
 
-    req.on('data', chunk => {
-      body += chunk.toString();
-    });
+function validateEmail(email) {
+  var regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+  return regex.test(email);
+}
+function validatePassword(password) {
+  var regex = /^(?=.*[a-zA-Z])(?=.*[0-9]).{6,}$/;
+  return regex.test(password);
+}
 
-    req.on('end', async () => {
-      const parsedBody = queryString.parse(body);
-      const { email, password } = parsedBody; // Extract data
+// Route to handle registration
+app.post('/', async (req, res) => {
+  const { email, password } = req.body; // Get data from request body
+  try {
+    const result = await pool.query('SELECT * FROM profile WHERE email = $1', [email]);
+    if (result.rows.length > 0) {
+      res.status(401).send('User already exists');
+    } else {
+      //registration
+      if(validateEmail(email) && validatePassword(password)){
 
-      try {
         await pool.query('INSERT INTO profile (email, password) VALUES ($1, $2)', [email, password]);
-        res.writeHead(201);
-        res.end('User registered');
-      } catch (err) {
-        console.error(err);
-        res.writeHead(500);
-        res.end('Server error');
+        res.status(201).send('User registered');
+      }else{
+        res.status(403).send('email or password are invalid');
       }
-    });
-  } else {
-    res.writeHead(404);
-    res.end();
+    }
+
+
+  
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server error');
   }
 });
 
-const port = "https://vercel-server-iota-murex.vercel.app"
-server.listen(port, () => {
-  console.log(`Server is running on ${port}`);
+app.listen(port, () => {
+  console.log(`Server running on ${port}`);
 });
-*/

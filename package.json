@@ -19,6 +19,13 @@
   },
   "homepage": "https://github.com/McNester/vercelServer#readme",
   "dependencies": {
-    "express": "^4.18.2"
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "http": "^0.0.1-security",
+    "list": "^2.0.19",
+    "pg": "^8.11.3",
+    "ph": "^0.1.10",
+    "querystring": "^0.2.1",
+    "url": "^0.11.3"
   }
 }
